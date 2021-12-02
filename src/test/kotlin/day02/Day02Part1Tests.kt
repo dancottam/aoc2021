@@ -1,7 +1,10 @@
+package day02
+
+import day02.Part1.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class Day02Tests {
+class Day02Part1Tests {
 
     private val startLocation = Location(
         horizontalPosition = 0,
