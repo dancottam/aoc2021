@@ -1,6 +1,7 @@
 package day02
 
 import day02.Part2.*
+import day02.Part2.Companion.createInstruction
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -39,12 +40,12 @@ class Day02Part2Tests {
     @Test
     fun `Example input yields expected result`() {
         val instructions = listOf(
-            Forward(5),
-            Down(5),
-            Forward(8),
-            Up(3),
-            Down(8),
-            Forward(2)
+            createInstruction("forward 5"),
+            createInstruction("down 5"),
+            createInstruction("forward 8"),
+            createInstruction("up 3"),
+            createInstruction("down 8"),
+            createInstruction("forward 2")
         )
         var state = State(
             horizontalPosition = 0,
