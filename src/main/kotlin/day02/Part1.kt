@@ -2,18 +2,18 @@ package day02
 
 class Part1 {
 
-    data class Location (
+    data class Location(
         val horizontalPosition: Int,
-        val depth:Int
+        val depth: Int
     )
 
-    abstract class Instruction (
+    abstract class Instruction(
         protected val amount: Int
     ) {
         abstract fun apply(currentLocation: Location): Location
     }
 
-    class Up(amount: Int): Instruction(amount) {
+    class Up(amount: Int) : Instruction(amount) {
         override fun apply(currentLocation: Location): Location {
             return Location(
                 horizontalPosition = currentLocation.horizontalPosition,
@@ -22,7 +22,7 @@ class Part1 {
         }
     }
 
-    class Down(amount: Int): Instruction(amount) {
+    class Down(amount: Int) : Instruction(amount) {
         override fun apply(currentLocation: Location): Location {
             return Location(
                 horizontalPosition = currentLocation.horizontalPosition,
@@ -31,7 +31,7 @@ class Part1 {
         }
     }
 
-    class Forward(amount: Int): Instruction(amount) {
+    class Forward(amount: Int) : Instruction(amount) {
         override fun apply(currentLocation: Location): Location {
             return Location(
                 horizontalPosition = currentLocation.horizontalPosition + amount,

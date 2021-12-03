@@ -1,19 +1,19 @@
 package day02
 
 class Part2 {
-    data class State (
+    data class State(
         val horizontalPosition: Int,
         val depth: Int,
         val aim: Int
     )
 
-    abstract class Instruction (
+    abstract class Instruction(
         protected val amount: Int
     ) {
         abstract fun apply(currentState: State): State
     }
 
-    class Down(amount: Int): Instruction(amount) {
+    class Down(amount: Int) : Instruction(amount) {
         override fun apply(currentState: State): State {
             return State(
                 horizontalPosition = currentState.horizontalPosition,
@@ -23,7 +23,7 @@ class Part2 {
         }
     }
 
-    class Up(amount: Int): Instruction(amount) {
+    class Up(amount: Int) : Instruction(amount) {
         override fun apply(currentState: State): State {
             return State(
                 horizontalPosition = currentState.horizontalPosition,
@@ -33,7 +33,7 @@ class Part2 {
         }
     }
 
-    class Forward(amount: Int): Instruction(amount) {
+    class Forward(amount: Int) : Instruction(amount) {
         override fun apply(currentState: State): State {
             return State(
                 horizontalPosition = currentState.horizontalPosition + amount,
