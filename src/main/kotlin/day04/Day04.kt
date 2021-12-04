@@ -8,21 +8,23 @@ fun main() {
     fun part1(input: List<String>): Int {
         val game = BingoGame(input)
         val result = game.play()
-        return result.winningScore
+        return result.firstWinnerScore()
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        val game = BingoGame(input)
+        val result = game.play()
+        return result.lastWinnerScore()
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day04_test")
     check(part1(testInput) == 4512)
-//    check(part2(testInput) == 1)
+    check(part2(testInput) == 1924)
 
     val input = readInput("Day04")
     println(part1(input))
-//    println(part2(input))
+    println(part2(input))
 }
 
 
@@ -30,25 +32,27 @@ class BingoGame(input: List<String>) {
 
     val drawNumbers = getDrawNumbers(input)
     val boards: List<Board> = createBoards(input)
+    private val remainingBoards = boards.toMutableList()
 
     fun callNumber(calledNumber: Int) {
-        for (board in boards) {
+        for (board in remainingBoards) {
             board.markNumber(calledNumber)
         }
     }
 
     fun play(): Result {
+        val result = Result()
+
         for (number in drawNumbers) {
             callNumber(number)
-            val winningBoards = findWinningBoards()
-            if (winningBoards.isNotEmpty()) {
-                return Result(number, winningBoards)
-            }
+            val winningBoards = findWinningBoards(remainingBoards)
+            result.addWinningBoards(number, winningBoards)
+            remainingBoards.removeAll(winningBoards)
         }
-        return Result(0, emptyList())
+        return result
     }
 
-    private fun findWinningBoards(): List<Board> {
+    private fun findWinningBoards(boards: MutableList<Board>): List<Board> {
         val winningBoards = mutableListOf<Board>()
         for (board in boards) {
             if (board.checkWin()) {
@@ -151,22 +155,30 @@ class BingoGame(input: List<String>) {
 
         }
 
-        class Result(
-            winningNumber: Int,
-            winningBoards: List<Board>
-        ) {
-            val winningScore = calculateWinningScore(winningNumber, winningBoards)
+        class Result {
+            private val scores = mutableListOf<BoardScore>()
 
-            private fun calculateWinningScore(winningNumber: Int, winningBoards: List<Board>): Int {
-                var highScore = 0
+            fun addWinningBoards(winningNumber: Int, winningBoards: List<Board>) {
+                val winningBoardScores = mutableListOf<BoardScore>()
                 for (board in winningBoards) {
-                    val boardScore = board.calculateScore(winningNumber)
-                    if (boardScore > highScore) {
-                        highScore = boardScore
-                    }
+                    winningBoardScores.add(BoardScore(board, board.calculateScore(winningNumber)))
                 }
-                return highScore
+                winningBoardScores.sortByDescending { it.score }
+                scores.addAll(winningBoardScores)
             }
+
+            fun firstWinnerScore(): Int {
+                return scores.first().score
+            }
+
+            fun lastWinnerScore(): Int {
+                return scores.last().score
+            }
+
+            data class BoardScore(
+                val board: Board,
+                val score: Int
+            )
 
         }
     }

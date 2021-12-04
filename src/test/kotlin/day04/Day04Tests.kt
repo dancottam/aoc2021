@@ -136,15 +136,20 @@ class Day04Tests {
 
     @Test
     fun `Score for losing board is 0`() {
-        game.play()
         assertEquals(0, game.boards[0].calculateScore(24))
         assertEquals(0, game.boards[1].calculateScore(24))
+        assertEquals(0, game.boards[2].calculateScore(24))
     }
 
     @Test
-    fun `Score for winning board is sum of all unmarked numbers multiplied by the last number called`() {
+    fun `Score for the winning board is sum of all unmarked numbers multiplied by the last number called`() {
         val result = game.play()
-        assertEquals(4512, result.winningScore)
+        assertEquals(4512, result.firstWinnerScore())
     }
 
+    @Test
+    fun `Score for the last board to win`() {
+        val result = game.play()
+        assertEquals(1924, result.lastWinnerScore())
+    }
 }
