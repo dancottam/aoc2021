@@ -6,7 +6,7 @@ import java.util.*
 fun main() {
     fun part1(input: List<String>): Int {
         val notes = Notes(input)
-        return notes.countInstancesOfNumbersInOutput(listOf(1, 4, 7, 8))
+        return notes.countNumbersInAllOutputs(listOf(1, 4, 7, 8))
     }
 
     fun part2(input: List<String>): Long {
@@ -24,7 +24,7 @@ fun main() {
     println(part2(input))
 }
 
-class Notes (input: List<String>) {
+class Notes(input: List<String>) {
 
     private val entries = createEntries(input)
 
@@ -32,7 +32,7 @@ class Notes (input: List<String>) {
         return input.map { Entry(it) }
     }
 
-    fun countInstancesOfNumbersInOutput(numbers: List<Int>): Int {
+    fun countNumbersInAllOutputs(numbers: List<Int>): Int {
         var total = 0
         for (entry in entries) {
             for (number in numbers) {
@@ -83,49 +83,57 @@ class Entry(input: String) {
         val eightPattern = signalPatterns.first { it.size == 7 }
         numberPatterns[8] = eightPattern
 
-        val zeroPattern = signalPatterns.first { segments ->
-            segments.size == 6
-                    && segments.containsAll(sevenPattern)
-                    && !segments.containsAll(fourPattern)
-        }
+        val zeroPattern = determineSixPattern(sevenPattern, fourPattern)
         numberPatterns[0] = zeroPattern
 
-        val ninePattern = signalPatterns.first { segments ->
-            segments.size == 6
-                    && segments.containsAll(fourPattern)
-                    && !segments.containsAll(eightPattern)
-        }
+        val ninePattern = determineSixPattern(fourPattern, eightPattern)
         numberPatterns[9] = ninePattern
 
-        val threePattern = signalPatterns.first { segments ->
+        val threePattern = determineThreePattern(onePattern, ninePattern)
+        numberPatterns[3] = threePattern
+
+        val fivePattern = determineFivePattern(onePattern, ninePattern)
+        numberPatterns[5] = fivePattern
+
+        val sixPattern = determineSixPattern(fivePattern, onePattern)
+        numberPatterns[6] = sixPattern
+
+        val twoPattern = determineTwoPattern(threePattern, fivePattern)
+        numberPatterns[2] = twoPattern
+
+        return numberPatterns.toSortedMap()
+    }
+
+    private fun determineThreePattern(onePattern: SortedSet<Char>, ninePattern: SortedSet<Char>): SortedSet<Char> {
+        return signalPatterns.first { segments ->
             segments.size == 5
                     && segments.containsAll(onePattern)
                     && ninePattern.containsAll(segments)
         }
-        numberPatterns[3] = threePattern
+    }
 
-        val fivePattern = signalPatterns.first { segments ->
-            segments.size  == 5
+    private fun determineFivePattern(onePattern: SortedSet<Char>, ninePattern: SortedSet<Char>): SortedSet<Char> {
+        return signalPatterns.first { segments ->
+            segments.size == 5
                     && !segments.containsAll(onePattern)
                     && ninePattern.containsAll(segments)
         }
-        numberPatterns[5] = fivePattern
+    }
 
-        val sixPattern = signalPatterns.first { segments ->
+    private fun determineSixPattern(fivePattern: SortedSet<Char>, onePattern: SortedSet<Char>): SortedSet<Char> {
+        return signalPatterns.first { segments ->
             segments.size == 6
                     && segments.containsAll(fivePattern)
                     && !segments.containsAll(onePattern)
         }
-        numberPatterns[6] = sixPattern
+    }
 
-        val twoPattern = signalPatterns.first { segments ->
+    private fun determineTwoPattern(threePattern: SortedSet<Char>, fivePattern: SortedSet<Char>): SortedSet<Char> {
+        return signalPatterns.first { segments ->
             segments.size == 5
                     && segments != threePattern
                     && segments != fivePattern
         }
-        numberPatterns[2] = twoPattern
-
-        return numberPatterns.toSortedMap()
     }
 
     fun patternForNumber(number: Int): String {

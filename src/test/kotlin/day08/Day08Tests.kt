@@ -59,7 +59,7 @@ class Day08Tests {
     @Test
     fun `Count numbers in output patterns`() {
         val notes = Notes(readInput("Day08_test"))
-        assertEquals(26, notes.countInstancesOfNumbersInOutput(listOf(1, 4, 7, 8)))
+        assertEquals(26, notes.countNumbersInAllOutputs(listOf(1, 4, 7, 8)))
     }
 
     @Test
