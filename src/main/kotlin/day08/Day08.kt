@@ -83,10 +83,10 @@ class Entry(input: String) {
         val eightPattern = signalPatterns.first { it.size == 7 }
         numberPatterns[8] = eightPattern
 
-        val zeroPattern = determineSixPattern(sevenPattern, fourPattern)
+        val zeroPattern = determineZeroPattern(sevenPattern, fourPattern)
         numberPatterns[0] = zeroPattern
 
-        val ninePattern = determineSixPattern(fourPattern, eightPattern)
+        val ninePattern = determineNinePattern(fourPattern, eightPattern)
         numberPatterns[9] = ninePattern
 
         val threePattern = determineThreePattern(onePattern, ninePattern)
@@ -102,6 +102,22 @@ class Entry(input: String) {
         numberPatterns[2] = twoPattern
 
         return numberPatterns.toSortedMap()
+    }
+
+    private fun determineZeroPattern(sevenPattern: SortedSet<Char>, fourPattern: SortedSet<Char>): SortedSet<Char> {
+        return signalPatterns.first { segments ->
+            segments.size == 6
+                    && segments.containsAll(sevenPattern)
+                    && !segments.containsAll(fourPattern)
+        }
+    }
+
+    private fun determineNinePattern(fourPattern: SortedSet<Char>, eightPattern: SortedSet<Char>): SortedSet<Char> {
+        return signalPatterns.first { segments ->
+            segments.size == 6
+                    && segments.containsAll(fourPattern)
+                    && !segments.containsAll(eightPattern)
+        }
     }
 
     private fun determineThreePattern(onePattern: SortedSet<Char>, ninePattern: SortedSet<Char>): SortedSet<Char> {
